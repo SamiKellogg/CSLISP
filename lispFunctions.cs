@@ -31,38 +31,55 @@ namespace CSLISP
         {
             string k = Program.util.extractKey(ref name);
             int[] index = Program.util.readNextPart(name, 0);
-            definedFunct newFunct = new definedFunct();
-            string[] filter = {"", " ", "(", ")"};
+            definedFunct newFunc = new definedFunct();
+            string[] filter = { "", " ", "(", ")" };
+            //Console.WriteLine(name);
             foreach (string s in Program.util.getSubArray(name, index, filter))
             {
-                newFunct.vars.Add(s, "");
-                newFunct.varLabels.Add(s);
+                //Console.WriteLine(s);
+                newFunc.vars.Add(s, "");
+                newFunc.varLabels.Add(s);
             }
 
             while (true)
             {
                 index = Program.util.readNextPart(name, index[1] + 1);
+                //Console.WriteLine("index");
+                //Console.WriteLine(index[0]);
                 if (index[1] - index[0] < 0 || index[0] == index[1]) break;
-                newFunct.statements.Add(Program.util.recompileString(Program.util.getSubArray(name, index)));
+                newFunc.statements.Add(Program.util.recompileString(Program.util.getSubArray(name, index)));
+                //Console.WriteLine("t");
+
 
             }
-            functions.Add(k, newFunct);
+            //Console.WriteLine(k);
+
+            functions.Add(k, newFunc);
+            //Console.WriteLine("4");
+
             Program.dictionary.dict.Add(k, Program.lisp.newfunct);
+            //Console.WriteLine("t");
+            //Console.WriteLine(Program.dictionary.dict.Keys);
             return "";
         }
         public string newfunct(string input, definedFunct funct = null)
         {
-            input = input.Trim();
-            string k = Program.util.extractKey(ref input);
+            //Console.WriteLine(input);
+            //input = input.Trim();
+            string k = Program.util.extractKey1(ref input);
+            //Console.WriteLine("k=");
+            //Console.WriteLine(input);
             Program.util.subVarr(ref input);
             Program.util.evaluateFunct(ref input, funct);
             input = input.Contains('(') ? input[(input.IndexOf('(') + 1)..(input.LastIndexOf(')'))].Trim() : input;
             definedFunct temp = new definedFunct();
             functions.TryGetValue(k, out temp);
             string[] filter = { ")", "(", " ", "" };
-            int i=0;
+            int i = 0;
             foreach (string s in Program.util.getSubArray(input, filter: filter))
             {
+                //Console.WriteLine("s=");
+                //SConsole.WriteLine(s);
                 temp.vars[temp.varLabels[i]] = s;
                 i++;
             }
@@ -70,15 +87,15 @@ namespace CSLISP
             foreach (string s in temp.statements)
             {
                 final = s;
-                Program.util.Atom(new int[] { 0, s.Length - 1 },  final, temp);
+                Program.util.Atom(new int[] { 0, s.Length - 1 }, final, temp);
             }
             return final;
         }
-        public string add( string input, definedFunct funct = null)
+        public string add(string input, definedFunct funct = null)
         {
             //Console.WriteLine(input);
             string[] filter = { "+" };
-            string [] tempInput= Program.util.getSubArray(input, filter:  filter);
+            string[] tempInput = Program.util.getSubArray(input, filter: filter);
             input = Program.util.recompileString(tempInput);
             //Console.WriteLine(input);
             double total = 0;
@@ -102,14 +119,74 @@ namespace CSLISP
             Program.util.evaluateFunct(ref input, func);
             Program.util.subVarr(ref input, func);
 
-            if (input == "" || input == "()") 
+            if (input == "" || input == "()")
                 Console.WriteLine("()");
-            else if (input == "\\n") 
+            else if (input == "\\n")
                 Console.WriteLine("");
             else
                 Console.WriteLine(input.Trim());
             return "";
         }
+        public string cond(string input, definedFunct funct)
+        {
+            //Console.WriteLine("d");
+            string[] tempInput = Program.util.getSubArray(input);
+            input = Program.util.recompileString(tempInput);
+            int[] index = Program.util.readFirstpart(input);
+            Program.util.AtomRef(index, ref input, funct);
+
+            if (Program.util.getSubArray(input)[1] == "T")
+            {
+                index = Program.util.readFirstpart(input);
+                //Console.WriteLine("not");
+                input = input.Substring(index[0], index[1] - index[0] + 1).Trim();
+                index = new int[] { 0, input.Length - 1 };
+                Program.util.AtomRef(index, ref input, funct);
+                return "";
+            }
+            else
+            {
+                //Console.WriteLine("here");
+
+                return "()";
+            }
+        }
+        public string isIf(string input, definedFunct funct = null)
+        {
+            string[] tempInput = Program.util.getSubArray(input);
+            input = Program.util.recompileString(tempInput);
+            int[] index = Program.util.readFirstpart(input);
+            Program.util.AtomRef(index, ref input, funct);
+            if (Program.util.getSubArray(input)[1] == "T")
+            {
+                index = Program.util.readFirstpart(input);
+                //Console.WriteLine(input);
+                input = input.Substring(index[0], index[1] - index[0] + 1).Trim();
+                index = new int[] { 0, input.Length - 1 };
+                Program.util.AtomRef(index, ref input, funct);
+                return "";
+            }
+            else
+            {
+                index = Program.util.readFirstpart(input);
+                //Console.WriteLine("i=");
+               // Console.WriteLine(input);
+                input = input.Replace(input.Substring(0, index[1] + 1), "").Trim();
+                //Console.WriteLine("i=");
+               // Console.WriteLine(input);
+                Program.util.subVarr(ref input, funct);
+                index = Program.util.readFirstpart(input);
+                //Console.WriteLine(index[0]);
+               // Console.WriteLine(index[1]);
+                //Console.WriteLine(input);
+                input = input.Substring(index[0], index[1] - index[0] + 1).Trim();
+                input = Program.util.recompileString(Program.util.getSubArray(input));
+                Program.util.AtomRef(new int[] { 0, input.Length - 1 }, ref input, funct);
+                return "";
+            }
+
+        }
+
 
         public string sub(string input, definedFunct funct)
         {
@@ -117,8 +194,8 @@ namespace CSLISP
             string[] tempInput = Program.util.getSubArray(input, filter: filter);
             input = Program.util.recompileString(tempInput);
             Program.util.evaluateFunct(ref input, funct);
-            Program.util.subVarr(ref input, funct) ;
-            string[] args=Program.util.getSubArray(input);
+            Program.util.subVarr(ref input, funct);
+            string[] args = Program.util.getSubArray(input);
             double total = Convert.ToDouble(args[0]);
             total -= Convert.ToDouble(args[1]);
             return total.ToString();
@@ -132,11 +209,11 @@ namespace CSLISP
             Program.util.subVarr(ref input, funct);
             string[] args = Program.util.getSubArray(input);
             double total = Convert.ToDouble(args[0]);
-            foreach(string s in args[1..])
+            foreach (string s in args[1..])
             {
                 total *= Convert.ToDouble(s);
             }
-            
+
             return total.ToString();
         }
         public string divide(string input, definedFunct funct)
@@ -153,18 +230,21 @@ namespace CSLISP
         }
         public string lessThan(string input, definedFunct funct)
         {
-            string[] filter = { "/" };
+            string[] filter = { "<" };
             string[] tempInput = Program.util.getSubArray(input, filter: filter);
             input = Program.util.recompileString(tempInput);
             Program.util.evaluateFunct(ref input, funct);
             Program.util.subVarr(ref input, funct);
             string[] args = Program.util.getSubArray(input);
+            //Console.WriteLine("<162");
             if (Convert.ToDouble(args[0]) < Convert.ToDouble(args[1]))
             {
+                //Console.WriteLine("T");
                 return "T";
             }
             else
             {
+                //Console.WriteLine("()");
                 return "()";
             }
         }
@@ -220,7 +300,7 @@ namespace CSLISP
         {
             string[] filter = { "symbol?" };
             string[] temp = Program.util.getSubArray(input, filter: filter);
-            if (Program.lisp.variables.ContainsKey(temp[0])) 
+            if (Program.lisp.variables.ContainsKey(temp[0]))
             {
                 return "T";
             }
@@ -231,17 +311,17 @@ namespace CSLISP
         }
         public string isList(string input, definedFunct funct)
         {
-            string[] filter = { "symbol?" };
+            string[] filter = { "list?" };
             string[] temp = Program.util.getSubArray(input, filter: filter);
             if (temp.Length < 2) return "()";
-            foreach(string s in temp)
+            foreach (string s in temp)
             {
                 if (Program.dictionary.dict.ContainsKey(s)) ;
                 return "()";
             }
             return "T";
         }
-        public string isNil(string input, definedFunct funct= null)
+        public string isNil(string input, definedFunct funct = null)
         {
             return (input.Contains("()") || input.Contains("( )") ? "T" : "()");
         }
@@ -254,7 +334,7 @@ namespace CSLISP
             else
                 return func.vars[input];
         }
-        public string set (string input, definedFunct funct = null)
+        public string set(string input, definedFunct funct = null)
         {
             string[] filter = { "set" };
             string[] tempInput = Program.util.getSubArray(input, filter: filter);
@@ -282,7 +362,7 @@ namespace CSLISP
             //Console.WriteLine("p");
             if (input[2] != '(')
             {
-               // Console.WriteLine(input.Split(" ")[1]);
+                // Console.WriteLine(input.Split(" ")[1]);
                 return input.Split(" ")[1];
             }
             else
@@ -295,7 +375,7 @@ namespace CSLISP
         public string cdr(string input, definedFunct funct)
         {
             string[] temp = Program.util.getSubArray(input);
-            string replace= String.Join(" ", temp);
+            string replace = String.Join(" ", temp);
             replace = replace.Replace("cdr", "car");
             string getCar = car(replace, null);
             replace = replace.Replace(getCar, " ");

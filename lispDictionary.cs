@@ -34,8 +34,8 @@ namespace CSLISP
             dict.Add("list?", Program.lisp.isList);
             dict.Add("EQ?", Program.lisp.equal);
             dict.Add("print", Program.lisp.print);
-            //dict.Add("if", Program.lisp.if_func);
-            //dict.Add("COND", Program.lisp.cond);
+            dict.Add("if", Program.lisp.isIf);
+            dict.Add("cond", Program.lisp.cond);
         }
     }
 }

@@ -135,7 +135,7 @@ namespace CSLISP
             int count = 0;
             //Console.WriteLine(input);
             string[] subArray = getSubArray(input);
-           // Console.WriteLine("1");
+            //Console.WriteLine("1");
 
             // Console.WriteLine(subArray);
 
@@ -171,9 +171,14 @@ namespace CSLISP
         }
         public int[] readNextPart(string s, int start)
         {
-            //Console.WriteLine(s);
+            //Console.WriteLine("s=");
+            //Console.WriteLine(s[start]);
+            //Console.WriteLine(start);
             string temp = s[start..];
             int[] index = readFirstpart(temp);
+            //Console.WriteLine("index=");
+            //Console.WriteLine(index[0]);
+            //Console.WriteLine(index[1]);
             index[0] += start;
             index[1] += start;
             return index;
@@ -227,13 +232,21 @@ namespace CSLISP
         }
         public string extractKey(ref string input)
         {
+            //Console.WriteLine(input);
+            string key = input.Trim().Split(" ")[1];
+            input = input[(input.IndexOf(key) + key.Length)..].Trim();
+            return key;
+        }
+        public string extractKey1(ref string input)
+        {
+            //Console.WriteLine(input);
             string key = input.Trim().Split(" ")[0];
             input = input[(input.IndexOf(key) + key.Length)..].Trim();
             return key;
         }
         public string[] getSubArray(string input, int[] index =null, string[]filter = null)
         {
-            Console.WriteLine(input);
+            //Console.WriteLine(input);
             filter ??= new string[] { };
             index ??= new int[] { 0, input.Length - 1 };
             string s = input[index[0]..(index[1] + 1)];

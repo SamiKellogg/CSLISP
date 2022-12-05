@@ -1,0 +1,3 @@
+(print function =(define add (A  B) (+ A B)) then solve (add (4 5)) then print function)
+(define add ( A  B ) ( + A B ) ) 
+( add ( 4 5 ) ) 
