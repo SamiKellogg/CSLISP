@@ -30,7 +30,7 @@ namespace CSLISP
             dict.Add("number?", Program.lisp.isNumber);
             dict.Add("symbol?", Program.lisp.isSymbol);
             dict.Add("null?", Program.lisp.isNil);
-            dict.Add("NIL?", Program.lisp.isNil);
+            dict.Add("nil?", Program.lisp.isNil);
             dict.Add("list?", Program.lisp.isList);
             dict.Add("EQ?", Program.lisp.equal);
             dict.Add("print", Program.lisp.print);

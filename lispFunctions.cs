@@ -284,7 +284,7 @@ namespace CSLISP
         }
         public string equal(string input, definedFunct funct)
         {
-            string[] filter = { "=", "EQ" };
+            string[] filter = { "=", "EQ?" };
             string[] tempInput = Program.util.getSubArray(input, filter: filter);
             input = Program.util.recompileString(tempInput);
             Program.util.evaluateFunct(ref input, funct);
@@ -333,7 +333,7 @@ namespace CSLISP
             if (temp.Length < 2) return "()";
             foreach (string s in temp)
             {
-                if (Program.dictionary.dict.ContainsKey(s)) ;
+                if (Program.dictionary.dict.ContainsKey(s)) 
                 return "()";
             }
             return "T";
