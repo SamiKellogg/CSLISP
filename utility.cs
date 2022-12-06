@@ -183,27 +183,27 @@ namespace CSLISP
             index[1] += start;
             return index;
         }
-        public void subVarr(ref string input, definedFunct funct = null)
+        public void subVarr(ref string input, definedFunct func = null)
         {
             string[] args = getSubArray(input);
             for(int i=0; i < args.Length; i++)
             {
-                if(funct != null)
+                if(func != null)
                 {
-                    if (funct.vars.ContainsKey(args[i]))
+                    if (func.vars.ContainsKey(args[i]))
                     {
-                        args[i] = funct.getVar(args[i], funct);
+                        args[i] = func.getVar(args[i], func);
                     }
                     else
                     {
-                        if (funct.vars.ContainsKey(args[i]))
+                        if (func.vars.ContainsKey(args[i]))
                             args[i] = funct.getVar(args[i]);
                     }
                 }
-                //else if (funct.vars.ContainsKey(args[i]))
-                //{
-                 //   args[i] = funct.getVar(args[i]);
-                //}
+                else if (funct.variables.ContainsKey(args[i]))
+                {
+                    args[i] = funct.getVar(args[i]);
+                }
             }
             input = string.Join(" ", args);
         }

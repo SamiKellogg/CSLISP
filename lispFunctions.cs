@@ -134,7 +134,7 @@ namespace CSLISP
             input = Program.util.recompileString(tempInput);
             int[] index = Program.util.readFirstpart(input);
             Program.util.AtomRef(index, ref input, funct);
-
+            
             if (Program.util.getSubArray(input)[1] == "T")
             {
                 index = Program.util.readFirstpart(input);
@@ -146,10 +146,27 @@ namespace CSLISP
             }
             else
             {
-                //Console.WriteLine("here");
-
-                return "()";
+                
+                while (true)
+                {
+                    index = Program.util.readFirstpart(input);
+                    input = input.Replace(input.Substring(0, index[1] + 1), "").Trim();
+                    //Console.WriteLine(input);
+                    index = Program.util.readFirstpart(input);
+                    Program.util.AtomRef(index, ref input, funct);
+                    //Console.WriteLine(input);
+                    if (Program.util.getSubArray(input)[0] == "T")
+                    {
+                        index = Program.util.readFirstpart(input);
+                        //Console.WriteLine("not");
+                        input = input.Substring(index[0], index[1] - index[0] + 1).Trim();
+                        index = new int[] { 0, input.Length - 1 };
+                        Program.util.AtomRef(index, ref input, funct);
+                        return "";
+                    }
+                }
             }
+            return "";
         }
         public string isIf(string input, definedFunct funct = null)
         {
@@ -342,12 +359,17 @@ namespace CSLISP
             string[] array = new string[2];
             Program.util.evaluateFunct(ref input, funct);
             array = Program.util.getSubArray(input);
+            //Console.WriteLine(array[0]);
             if (variables.ContainsKey(array[1]))
             {
+                //Console.WriteLine("2");
+
                 array[1] = getVar(array[1]);
             }
             if (variables.ContainsKey(array[0]))
             {
+                //Console.WriteLine("3");
+
                 variables.Remove(array[0]);
             }
             variables.Add(array[0], array[1]);
