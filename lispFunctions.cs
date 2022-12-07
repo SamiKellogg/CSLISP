@@ -74,12 +74,13 @@ namespace CSLISP
             input = input.Contains('(') ? input[(input.IndexOf('(') + 1)..(input.LastIndexOf(')'))].Trim() : input;
             definedFunct temp = new definedFunct();
             functions.TryGetValue(k, out temp);
-            string[] filter = { ")", "(", " ", "" };
+            string[] filter = { ")", "(", " ", "", "+" };
             int i = 0;
             foreach (string s in Program.util.getSubArray(input, filter: filter))
             {
                 //Console.WriteLine("s=");
-                //SConsole.WriteLine(s);
+                //Console.WriteLine(s);
+                //Console.WriteLine(i);
                 temp.vars[temp.varLabels[i]] = s;
                 i++;
             }

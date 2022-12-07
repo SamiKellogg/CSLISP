@@ -1,2 +1,9 @@
-( define merge ( a b ) ( cond ( nil? a ) b ( nil? b ) a ( lte? ( car a ) ( car b ) ) ( cons ( car a ) ( merge ( cdr a ) b ) ) ) )
+( print ( set X and Y to 10 and then add X and Y should be 20) )
+(set ( X 10 ) )
+(set ( Y 10 ) )
+( + X Y )
+( print eq= (cond (= 1 1) (+ 5 5)) ans should be t then 10)
 ( cond ( = 1 1 ) ( + 5 5 ) )
+(print  eq = (cond (< 5 0) (+ 5 5) (> 1 1) (+ 5 6) (= 1 1) (+ 7 6)) should be 13 )
+( cond ( < 5 0 ) ( + 5 5 ) ( > 1 1 ) ( + 5 6 ) ( = 1 1 ) ( + 7 6 ) )
+
